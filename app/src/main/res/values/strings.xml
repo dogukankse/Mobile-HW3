@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">OgrenciBilgiSistemi</string>
+    <string name="dersler">Dersler</string>
+    <string name="ogrenciler">Öğrenciler</string>
+</resources>
