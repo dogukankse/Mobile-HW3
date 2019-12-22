@@ -9,37 +9,34 @@ import android.widget.EditText;
 import com.dogukankse.ogrencibilgisistemi.R;
 import com.dogukankse.ogrencibilgisistemi.db.DBManager;
 
-public class AddStudentActivity extends AppCompatActivity {
+public class AddCourseActivity extends AppCompatActivity {
 
     EditText name;
-    EditText surname;
     Button addButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_add_student);
+        setContentView(R.layout.activity_add_course);
 
-        name = findViewById(R.id.student_name_edit);
-        surname = findViewById(R.id.student_surname_edit);
-        addButton = findViewById(R.id.student_add_button);
+        name = findViewById(R.id.course_name_edit);
+        addButton = findViewById(R.id.course_add_button);
 
         addButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String nameStr = name.getText().toString();
-                String surnameStr = surname.getText().toString();
-                if (!nameStr.equals("") && !surnameStr.equals("")) {
-                    DBManager dbManager = new DBManager(AddStudentActivity.this);
+                String courseName = name.getText().toString();
+
+                if (!courseName.equals("")) {
+                    DBManager dbManager = new DBManager(AddCourseActivity.this);
                     dbManager.Open();
-                    dbManager.InsertStudent(nameStr, surnameStr);
+                    dbManager.InsertCourse(courseName);
                     dbManager.Close();
 
                     finish();
                 }
             }
         });
-
 
     }
 }

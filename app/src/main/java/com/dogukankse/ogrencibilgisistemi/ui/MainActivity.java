@@ -30,7 +30,7 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getBaseContext(),LecturesActivity.class);
+                Intent intent = new Intent(getBaseContext(), CourseActivity.class);
                 startActivity(intent);
             }
         });

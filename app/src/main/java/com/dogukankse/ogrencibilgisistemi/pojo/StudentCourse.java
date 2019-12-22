@@ -5,6 +5,7 @@ public class StudentCourse {
     private int studentId;
     private int courseId;
     private String courseName;
+    private float note;
 
     public StudentCourse(int id, int studentId, int courseId) {
         this.id = id;
@@ -30,5 +31,13 @@ public class StudentCourse {
 
     public void setCourseName(String courseName) {
         this.courseName = courseName;
+    }
+
+    public float getNote() {
+        return note;
+    }
+
+    public void setNote(float note) {
+        this.note = note;
     }
 }

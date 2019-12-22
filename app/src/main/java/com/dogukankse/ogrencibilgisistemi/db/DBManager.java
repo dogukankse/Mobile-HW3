@@ -134,44 +134,25 @@ public class DBManager {
             );
 
 
-            String localQuery = "SELECT  name " +
+            String localQuery = "SELECT  name, note " +
                     "FROM Courses " +
                     "INNER JOIN StudentCourses " +
                     "ON Courses.id = StudentCourses.course_id " +
                     "WHERE " + item.getId() + " = StudentCourses.id";
             Cursor localCursor = db.rawQuery(localQuery, null);
 
-            while (localCursor.moveToNext())
-                item.setCourseName(localCursor.getString(localCursor.getColumnIndex(DatabaseHelper.COURSE_NAME)));
-
-            studentCourses.add(item);
+            while (localCursor.moveToNext()) {
+                String str = localCursor.getString(localCursor.getColumnIndex(DatabaseHelper.COURSE_NAME));
+                item.setCourseName(str);
+                item.setNote(localCursor.getFloat(localCursor.getColumnIndex(DatabaseHelper.STUDENT_COURSE_NOTE)));
+            }
+            if(item.getCourseName()!=null)
+                studentCourses.add(item);
 
         }
 
 
         return studentCourses;
-    }
-
-
-    //student-course-note
-    public void InsertStudentCourseNote(long studentId, long courseId, float note) {
-        ContentValues contentValue = new ContentValues();
-        contentValue.put(DatabaseHelper.STUDENT_COURSE_NOTES_STUDENT_ID, studentId);
-        contentValue.put(DatabaseHelper.STUDENT_COURSE_NOTES_COURSE_ID, courseId);
-        contentValue.put(DatabaseHelper.STUDENT_COURSE_NOTES_NOTE, note);
-        db.insert(DatabaseHelper.STUDENT_COURSE_NOTES_TABLE_NAME, null, contentValue);
-    }
-
-    public void UpdateStudentCourseNote(long id, long studentId, long courseId, float note) {
-        ContentValues contentValue = new ContentValues();
-        contentValue.put(DatabaseHelper.STUDENT_COURSE_NOTES_STUDENT_ID, studentId);
-        contentValue.put(DatabaseHelper.STUDENT_COURSE_NOTES_COURSE_ID, courseId);
-        contentValue.put(DatabaseHelper.STUDENT_COURSE_NOTES_NOTE, note);
-        db.update(DatabaseHelper.STUDENT_COURSE_NOTES_TABLE_NAME, contentValue, DatabaseHelper.STUDENT_COURSE_NOTES_ID + "=" + id, null);
-    }
-
-    public void DeleteStudentCourseNote(long id) {
-        db.delete(DatabaseHelper.STUDENT_COURSE_NOTES_TABLE_NAME, DatabaseHelper.STUDENT_COURSE_NOTES_ID + "=" + id, null);
     }
 
 

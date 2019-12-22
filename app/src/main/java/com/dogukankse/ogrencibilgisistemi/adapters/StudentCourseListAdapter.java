@@ -1,4 +1,4 @@
-package com.dogukankse.ogrencibilgisistemi.ui;
+package com.dogukankse.ogrencibilgisistemi.adapters;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -8,7 +8,6 @@ import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
 import com.dogukankse.ogrencibilgisistemi.R;
-import com.dogukankse.ogrencibilgisistemi.db.DBManager;
 import com.dogukankse.ogrencibilgisistemi.pojo.StudentCourse;
 
 import java.util.ArrayList;
@@ -19,9 +18,8 @@ public class StudentCourseListAdapter extends ArrayAdapter<StudentCourse> {
     private final Context context;
     private ViewHolder holder;
     private final ArrayList<StudentCourse> studentCourses;
-    DBManager dbManager;
 
-    StudentCourseListAdapter(Context context, ArrayList<StudentCourse> studentCourses) {
+    public StudentCourseListAdapter(Context context, ArrayList<StudentCourse> studentCourses) {
         super(context, 0, studentCourses);
         this.context = context;
         this.studentCourses = studentCourses;
@@ -50,6 +48,7 @@ public class StudentCourseListAdapter extends ArrayAdapter<StudentCourse> {
 
             holder = new ViewHolder();
             holder.name = convertView.findViewById(R.id.student_course_list_name);
+            holder.note = convertView.findViewById(R.id.student_course_list_note);
 
             convertView.setTag(holder);
 
@@ -59,12 +58,14 @@ public class StudentCourseListAdapter extends ArrayAdapter<StudentCourse> {
         StudentCourse studentCourse = getItem(position);
         if (studentCourse != null) {
             holder.name.setText(studentCourse.getCourseName());
+            holder.note.setText(studentCourse.getNote() + "");
         }
         return convertView;
     }
 
     private static class ViewHolder {
         TextView name;
+        TextView note;
 
     }
 }

@@ -36,27 +36,16 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public static final String STUDENT_COURSE_ID = "id";
     public static final String STUDENT_COURSE_STUDENT_ID = "student_id";
     public static final String STUDENT_COURSE_COURSE_ID = "course_id";
+    public static final String STUDENT_COURSE_NOTE = "note";
 
     private static final String CREATE_STUDENT_COURSE_TABLE = "create table " + STUDENT_COURSE_TABLE_NAME +
             "(" + STUDENT_COURSE_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
             STUDENT_COURSE_STUDENT_ID + " INTEGER NOT NULL, " +
-            STUDENT_COURSE_COURSE_ID + " INTEGER NOT NULL," +
-            "FOREIGN KEY (" + STUDENT_COURSE_STUDENT_ID + ") REFERENCES " + STUDENT_TABLE_NAME + " (" + STUDENT_ID + "));";
+            STUDENT_COURSE_COURSE_ID + " INTEGER NOT NULL, " +
+            STUDENT_COURSE_NOTE + " INTEGER NOT NULL, " +
+            "FOREIGN KEY (" + STUDENT_COURSE_STUDENT_ID + ") REFERENCES " + STUDENT_TABLE_NAME + " (" + STUDENT_ID + "), " +
+            "FOREIGN KEY (" + STUDENT_COURSE_COURSE_ID + ") REFERENCES " + COURSE_NAME + " (" + COURSE_ID + "));";
 
-    //student-course-notes table
-    public static final String STUDENT_COURSE_NOTES_TABLE_NAME = "StudentCourseNotes";
-    public static final String STUDENT_COURSE_NOTES_ID = "id";
-    public static final String STUDENT_COURSE_NOTES_STUDENT_ID = "student_id";
-    public static final String STUDENT_COURSE_NOTES_COURSE_ID = "course_id";
-    public static final String STUDENT_COURSE_NOTES_NOTE = "note";
-
-    private static final String CREATE_STUDENT_COURSE_NOTES_TABLE = "create table " + STUDENT_COURSE_NOTES_TABLE_NAME +
-            "(" + STUDENT_COURSE_NOTES_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
-            STUDENT_COURSE_NOTES_STUDENT_ID + " INTEGER NOT NULL, " +
-            STUDENT_COURSE_NOTES_COURSE_ID + " INTEGER NOT NULL," +
-            STUDENT_COURSE_NOTES_NOTE + " INTEGER NOT NULL," +
-            "FOREIGN KEY (" + STUDENT_COURSE_NOTES_STUDENT_ID + ") REFERENCES " + STUDENT_TABLE_NAME + " (" + STUDENT_ID + ")," +
-            "FOREIGN KEY (" + STUDENT_COURSE_NOTES_COURSE_ID + ") REFERENCES " + COURSE_TABLE_NAME + " (" + COURSE_ID + "));";
 
     public DatabaseHelper(Context context) {
         super(context, DB_NAME, null, DB_VERSION);
@@ -68,7 +57,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL(CREATE_STUDNET_TABLE);
         db.execSQL(CREATE_COURSE_TABLE);
         db.execSQL(CREATE_STUDENT_COURSE_TABLE);
-        db.execSQL(CREATE_STUDENT_COURSE_NOTES_TABLE);
 
         //initial student
         db.execSQL("INSERT INTO " + STUDENT_TABLE_NAME + "(" + STUDENT_NAME + "," + STUDENT_SURNAME +
@@ -90,27 +78,29 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         //initial studentcourse
         db.execSQL("INSERT INTO " + STUDENT_COURSE_TABLE_NAME + "(" + STUDENT_COURSE_STUDENT_ID + ", "
-                + STUDENT_COURSE_COURSE_ID + ") values(1,1)");
+                + STUDENT_COURSE_COURSE_ID + ", " + STUDENT_COURSE_NOTE + ") values(1,1,24.45)");
         db.execSQL("INSERT INTO " + STUDENT_COURSE_TABLE_NAME + "(" + STUDENT_COURSE_STUDENT_ID + ", "
-                + STUDENT_COURSE_COURSE_ID + ") values(1,2)");
+                + STUDENT_COURSE_COURSE_ID + ", " + STUDENT_COURSE_NOTE + ") values(1,2,88)");
         db.execSQL("INSERT INTO " + STUDENT_COURSE_TABLE_NAME + "(" + STUDENT_COURSE_STUDENT_ID + ", "
-                + STUDENT_COURSE_COURSE_ID + ") values(1,3)");
+                + STUDENT_COURSE_COURSE_ID + ", " + STUDENT_COURSE_NOTE + ") values(1,3,77)");
         db.execSQL("INSERT INTO " + STUDENT_COURSE_TABLE_NAME + "(" + STUDENT_COURSE_STUDENT_ID + ", "
-                + STUDENT_COURSE_COURSE_ID + ") values(1,4)");
+                + STUDENT_COURSE_COURSE_ID + ", " + STUDENT_COURSE_NOTE + ") values(1,4,57)");
 
         db.execSQL("INSERT INTO " + STUDENT_COURSE_TABLE_NAME + "(" + STUDENT_COURSE_STUDENT_ID + ", "
-                + STUDENT_COURSE_COURSE_ID + ") values(2,1)");
+                + STUDENT_COURSE_COURSE_ID + ", " + STUDENT_COURSE_NOTE + ") values(2,1,68)");
         db.execSQL("INSERT INTO " + STUDENT_COURSE_TABLE_NAME + "(" + STUDENT_COURSE_STUDENT_ID + ", "
-                + STUDENT_COURSE_COURSE_ID + ") values(2,2)");
+                + STUDENT_COURSE_COURSE_ID + ", " + STUDENT_COURSE_NOTE + ") values(2,2,98)");
         db.execSQL("INSERT INTO " + STUDENT_COURSE_TABLE_NAME + "(" + STUDENT_COURSE_STUDENT_ID + ", "
-                + STUDENT_COURSE_COURSE_ID + ") values(2,3)");
+                + STUDENT_COURSE_COURSE_ID + ", " + STUDENT_COURSE_NOTE + ") values(2,3,24.45)");
 
         db.execSQL("INSERT INTO " + STUDENT_COURSE_TABLE_NAME + "(" + STUDENT_COURSE_STUDENT_ID + ", "
-                + STUDENT_COURSE_COURSE_ID + ") values(3,1)");
+                + STUDENT_COURSE_COURSE_ID + ", " + STUDENT_COURSE_NOTE + ") values(3,1,75)");
         db.execSQL("INSERT INTO " + STUDENT_COURSE_TABLE_NAME + "(" + STUDENT_COURSE_STUDENT_ID + ", "
-                + STUDENT_COURSE_COURSE_ID + ") values(3,2)");
+                + STUDENT_COURSE_COURSE_ID + ", " + STUDENT_COURSE_NOTE + ") values(3,2,88.45)");
         db.execSQL("INSERT INTO " + STUDENT_COURSE_TABLE_NAME + "(" + STUDENT_COURSE_STUDENT_ID + ", "
-                + STUDENT_COURSE_COURSE_ID + ") values(3,3)");
+                + STUDENT_COURSE_COURSE_ID + ", " + STUDENT_COURSE_NOTE + ") values(3,3,50.45)");
+
+
     }
 
 
@@ -119,7 +109,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS " + STUDENT_TABLE_NAME);
         db.execSQL("DROP TABLE IF EXISTS " + COURSE_TABLE_NAME);
         db.execSQL("DROP TABLE IF EXISTS " + STUDENT_COURSE_TABLE_NAME);
-        db.execSQL("DROP TABLE IF EXISTS " + STUDENT_COURSE_NOTES_TABLE_NAME);
         onCreate(db);
     }
 }

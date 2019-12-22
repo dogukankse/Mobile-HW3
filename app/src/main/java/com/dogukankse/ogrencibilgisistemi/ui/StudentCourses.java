@@ -5,6 +5,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.widget.ListView;
 
 import com.dogukankse.ogrencibilgisistemi.R;
+import com.dogukankse.ogrencibilgisistemi.adapters.StudentCourseListAdapter;
 import com.dogukankse.ogrencibilgisistemi.db.DBManager;
 import com.dogukankse.ogrencibilgisistemi.pojo.StudentCourse;
 

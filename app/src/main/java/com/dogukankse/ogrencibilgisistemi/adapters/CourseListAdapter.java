@@ -1,7 +1,6 @@
-package com.dogukankse.ogrencibilgisistemi.ui;
+package com.dogukankse.ogrencibilgisistemi.adapters;
 
 import android.content.Context;
-import android.content.Intent;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,37 +10,37 @@ import android.widget.TextView;
 
 import com.dogukankse.ogrencibilgisistemi.R;
 import com.dogukankse.ogrencibilgisistemi.db.DBManager;
-import com.dogukankse.ogrencibilgisistemi.pojo.Student;
+import com.dogukankse.ogrencibilgisistemi.pojo.Course;
 
 import java.util.ArrayList;
 
-public class StudentListAdapter extends ArrayAdapter<Student> {
+public class CourseListAdapter extends ArrayAdapter<Course> {
     private final LayoutInflater inflater;
     private final Context context;
     private ViewHolder holder;
-    private final ArrayList<Student> students;
+    private final ArrayList<Course> courses;
     private DBManager dbManager;
 
-    StudentListAdapter(Context context, ArrayList<Student> students) {
-        super(context, 0, students);
+    public CourseListAdapter(Context context, ArrayList<Course> courses) {
+        super(context, 0, courses);
         this.context = context;
-        this.students = students;
+        this.courses = courses;
         inflater = LayoutInflater.from(context);
     }
 
     @Override
     public int getCount() {
-        return students.size();
+        return courses.size();
     }
 
     @Override
-    public Student getItem(int position) {
-        return students.get(position);
+    public Course getItem(int position) {
+        return courses.get(position);
     }
 
     @Override
     public long getItemId(int position) {
-        return students.get(position).getId();
+        return courses.get(position).getId();
     }
 
     @Override
@@ -51,19 +50,16 @@ public class StudentListAdapter extends ArrayAdapter<Student> {
 
             holder = new ViewHolder();
             holder.name = convertView.findViewById(R.id.student_name);
-            holder.surname = convertView.findViewById(R.id.student_surname);
-            holder.id = convertView.findViewById(R.id.student_id);
 
             convertView.setTag(holder);
         } else {
             holder = (ViewHolder) convertView.getTag();
         }
 
-        Student student = getItem(position);
-        if (student != null) {
-            holder.name.setText(student.getName());
-            holder.surname.setText(student.getSurname());
-            holder.id.setText("" + student.getId());
+        Course course = getItem(position);
+        if (course != null) {
+            holder.name.setText(course.getName());
+
         }
 
         convertView.setOnLongClickListener(new View.OnLongClickListener() {
@@ -72,8 +68,8 @@ public class StudentListAdapter extends ArrayAdapter<Student> {
                 dbManager = new DBManager(context);
                 dbManager.Open();
                 Log.i("LONGPRESS", getItemId(position) + "");
-                dbManager.DeleteStudent(getItemId(position));
-                students.remove(position);
+                dbManager.DeleteCourse(getItemId(position));
+                courses.remove(position);
                 notifyDataSetChanged();
                 dbManager.Close();
                 return true;
@@ -83,9 +79,9 @@ public class StudentListAdapter extends ArrayAdapter<Student> {
         convertView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(context,StudentCourses.class);
-                intent.putExtra("id",getItemId(position));
-                context.startActivity(intent);
+                //Intent intent = new Intent(context, StudentCourses.class);
+                //intent.putExtra("id", getItemId(position));
+                //context.startActivity(intent);
             }
         });
 
@@ -95,7 +91,6 @@ public class StudentListAdapter extends ArrayAdapter<Student> {
 
     private static class ViewHolder {
         TextView name;
-        TextView surname;
-        TextView id;
+
     }
 }
