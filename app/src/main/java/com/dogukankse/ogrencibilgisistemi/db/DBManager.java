@@ -6,7 +6,9 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
-import com.dogukankse.ogrencibilgisistemi.pojo.*;
+import com.dogukankse.ogrencibilgisistemi.pojo.Course;
+import com.dogukankse.ogrencibilgisistemi.pojo.Student;
+import com.dogukankse.ogrencibilgisistemi.pojo.StudentCourse;
 
 import java.util.ArrayList;
 
@@ -23,7 +25,6 @@ public class DBManager {
     public DBManager Open() {
         dbHelper = new DatabaseHelper(context);
         db = dbHelper.getWritableDatabase();
-        Log.i("DB",db.getPath());
         return this;
     }
 
@@ -56,8 +57,8 @@ public class DBManager {
     public ArrayList<Student> GetStudents() {
         ArrayList<Student> students = new ArrayList<>();
         String query = "SELECT * FROM " + DatabaseHelper.STUDENT_TABLE_NAME;
-        Cursor cursor = db.rawQuery(query,null);
-        while (cursor.moveToNext()){
+        Cursor cursor = db.rawQuery(query, null);
+        while (cursor.moveToNext()) {
             students.add(new Student(
                     cursor.getInt(cursor.getColumnIndex(DatabaseHelper.STUDENT_ID)),
                     cursor.getString(cursor.getColumnIndex(DatabaseHelper.STUDENT_NAME)),
@@ -86,10 +87,10 @@ public class DBManager {
     }
 
     public ArrayList<Course> GetCourses() {
-        ArrayList<Course> courses= new ArrayList<>();
+        ArrayList<Course> courses = new ArrayList<>();
         String query = "SELECT * FROM " + DatabaseHelper.COURSE_TABLE_NAME;
-        Cursor cursor = db.rawQuery(query,null);
-        while (cursor.moveToNext()){
+        Cursor cursor = db.rawQuery(query, null);
+        while (cursor.moveToNext()) {
             courses.add(new Course(
                     cursor.getInt(cursor.getColumnIndex(DatabaseHelper.COURSE_ID)),
                     cursor.getString(cursor.getColumnIndex(DatabaseHelper.COURSE_NAME))
@@ -118,6 +119,39 @@ public class DBManager {
         db.delete(DatabaseHelper.STUDENT_COURSE_TABLE_NAME, DatabaseHelper.STUDENT_COURSE_ID + "=" + id, null);
     }
 
+    public ArrayList<StudentCourse> GetStudentCourses(long studentId) {
+        ArrayList<StudentCourse> studentCourses = new ArrayList<>();
+        String query = "SELECT * " +
+                "FROM StudentCourses " +
+                "WHERE student_id = " + studentId;
+        Cursor cursor = db.rawQuery(query, null);
+        while (cursor.moveToNext()) {
+
+            StudentCourse item = new StudentCourse(
+                    cursor.getInt(cursor.getColumnIndex(DatabaseHelper.STUDENT_COURSE_ID)),
+                    cursor.getInt(cursor.getColumnIndex(DatabaseHelper.STUDENT_COURSE_STUDENT_ID)),
+                    cursor.getInt(cursor.getColumnIndex(DatabaseHelper.STUDENT_COURSE_COURSE_ID))
+            );
+
+
+            String localQuery = "SELECT  name " +
+                    "FROM Courses " +
+                    "INNER JOIN StudentCourses " +
+                    "ON Courses.id = StudentCourses.course_id " +
+                    "WHERE " + item.getId() + " = StudentCourses.id";
+            Cursor localCursor = db.rawQuery(localQuery, null);
+
+            while (localCursor.moveToNext())
+                item.setCourseName(localCursor.getString(localCursor.getColumnIndex(DatabaseHelper.COURSE_NAME)));
+
+            studentCourses.add(item);
+
+        }
+
+
+        return studentCourses;
+    }
+
 
     //student-course-note
     public void InsertStudentCourseNote(long studentId, long courseId, float note) {
@@ -139,4 +173,6 @@ public class DBManager {
     public void DeleteStudentCourseNote(long id) {
         db.delete(DatabaseHelper.STUDENT_COURSE_NOTES_TABLE_NAME, DatabaseHelper.STUDENT_COURSE_NOTES_ID + "=" + id, null);
     }
+
+
 }
