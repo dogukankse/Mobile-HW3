@@ -1,6 +1,7 @@
 package com.dogukankse.ogrencibilgisistemi.adapters;
 
 import android.content.Context;
+import android.content.Intent;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,6 +12,7 @@ import android.widget.TextView;
 import com.dogukankse.ogrencibilgisistemi.R;
 import com.dogukankse.ogrencibilgisistemi.db.DBManager;
 import com.dogukankse.ogrencibilgisistemi.pojo.Course;
+import com.dogukankse.ogrencibilgisistemi.ui.CourseStudentsActivity;
 
 import java.util.ArrayList;
 
@@ -79,9 +81,9 @@ public class CourseListAdapter extends ArrayAdapter<Course> {
         convertView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //Intent intent = new Intent(context, StudentCourses.class);
-                //intent.putExtra("id", getItemId(position));
-                //context.startActivity(intent);
+                Intent intent = new Intent(context, CourseStudentsActivity.class);
+                intent.putExtra("id", getItemId(position));
+                context.startActivity(intent);
             }
         });
 

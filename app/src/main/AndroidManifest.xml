@@ -9,8 +9,11 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.AppCompat.DayNight.NoActionBar">
-        <activity android:name=".ui.AddCourseActivity"></activity>
-        <activity android:name=".ui.StudentCourses" />
+        <activity android:name=".ui.AddStudentToCourseActivity"></activity>
+        <activity android:name=".ui.NoteChangeActivity" />
+        <activity android:name=".ui.CourseStudentsActivity" />
+        <activity android:name=".ui.AddCourseActivity" />
+        <activity android:name=".ui.StudentCoursesActivity" />
         <activity android:name=".ui.AddStudentActivity" />
         <activity android:name=".ui.CourseActivity" />
         <activity android:name=".ui.StudentActivity" />

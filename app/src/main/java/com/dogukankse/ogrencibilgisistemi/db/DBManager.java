@@ -4,7 +4,6 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.util.Log;
 
 import com.dogukankse.ogrencibilgisistemi.pojo.Course;
 import com.dogukankse.ogrencibilgisistemi.pojo.Student;
@@ -100,19 +99,20 @@ public class DBManager {
     }
 
     //student-course
-    public void InsertStudentCourse(long studentId, long courseId) {
+    public void InsertStudentCourse(long studentId, long courseId,float note) {
         ContentValues contentValue = new ContentValues();
         contentValue.put(DatabaseHelper.STUDENT_COURSE_STUDENT_ID, studentId);
         contentValue.put(DatabaseHelper.STUDENT_COURSE_COURSE_ID, courseId);
+        contentValue.put(DatabaseHelper.STUDENT_COURSE_NOTE,note);
         db.insert(DatabaseHelper.STUDENT_COURSE_TABLE_NAME, null, contentValue);
     }
 
 
-    public void UpdateStudentCourse(long id, long studentId, long courseId) {
+    public void UpdateStudentCourse(long id, float note) {
         ContentValues contentValue = new ContentValues();
-        contentValue.put(DatabaseHelper.STUDENT_COURSE_STUDENT_ID, studentId);
-        contentValue.put(DatabaseHelper.STUDENT_COURSE_COURSE_ID, courseId);
-        db.update(DatabaseHelper.STUDENT_COURSE_TABLE_NAME, contentValue, DatabaseHelper.STUDENT_COURSE_ID + "=" + id, null);
+        contentValue.put(DatabaseHelper.STUDENT_COURSE_NOTE, note);
+        db.update(DatabaseHelper.STUDENT_COURSE_TABLE_NAME, contentValue,
+                DatabaseHelper.STUDENT_COURSE_ID + " = " + id, null);
     }
 
     public void DeleteStudentCourse(long id) {
@@ -130,11 +130,12 @@ public class DBManager {
             StudentCourse item = new StudentCourse(
                     cursor.getInt(cursor.getColumnIndex(DatabaseHelper.STUDENT_COURSE_ID)),
                     cursor.getInt(cursor.getColumnIndex(DatabaseHelper.STUDENT_COURSE_STUDENT_ID)),
-                    cursor.getInt(cursor.getColumnIndex(DatabaseHelper.STUDENT_COURSE_COURSE_ID))
+                    cursor.getInt(cursor.getColumnIndex(DatabaseHelper.STUDENT_COURSE_COURSE_ID)),
+                    cursor.getFloat(cursor.getColumnIndex(DatabaseHelper.STUDENT_COURSE_NOTE))
             );
 
 
-            String localQuery = "SELECT  name, note " +
+            String localQuery = "SELECT  name " +
                     "FROM Courses " +
                     "INNER JOIN StudentCourses " +
                     "ON Courses.id = StudentCourses.course_id " +
@@ -142,11 +143,9 @@ public class DBManager {
             Cursor localCursor = db.rawQuery(localQuery, null);
 
             while (localCursor.moveToNext()) {
-                String str = localCursor.getString(localCursor.getColumnIndex(DatabaseHelper.COURSE_NAME));
-                item.setCourseName(str);
-                item.setNote(localCursor.getFloat(localCursor.getColumnIndex(DatabaseHelper.STUDENT_COURSE_NOTE)));
+                item.setCourseName(localCursor.getString(localCursor.getColumnIndex(DatabaseHelper.COURSE_NAME)));
             }
-            if(item.getCourseName()!=null)
+            if (item.getCourseName() != null)
                 studentCourses.add(item);
 
         }
@@ -156,4 +155,82 @@ public class DBManager {
     }
 
 
+    public ArrayList<StudentCourse> GetCourseStudents(long courseId) {
+        ArrayList<StudentCourse> courseStudents = new ArrayList<>();
+        String query = "SELECT * " +
+                "FROM StudentCourses " +
+                "WHERE course_id = " + courseId;
+        Cursor cursor = db.rawQuery(query, null);
+        while (cursor.moveToNext()) {
+
+            StudentCourse item = new StudentCourse(
+                    cursor.getInt(cursor.getColumnIndex(DatabaseHelper.STUDENT_COURSE_ID)),
+                    cursor.getInt(cursor.getColumnIndex(DatabaseHelper.STUDENT_COURSE_STUDENT_ID)),
+                    cursor.getInt(cursor.getColumnIndex(DatabaseHelper.STUDENT_COURSE_COURSE_ID)),
+                    cursor.getFloat(cursor.getColumnIndex(DatabaseHelper.STUDENT_COURSE_NOTE)));
+
+
+            String localQuery = "SELECT  name,surname " +
+                    "FROM Students " +
+                    "INNER JOIN StudentCourses " +
+                    "ON StudentCourses.student_id = Students.id " +
+                    "WHERE " + item.getCourseId() + " = StudentCourses.course_id " +
+                    "AND " + item.getStudentId() + " = StudentCourses.student_id";
+            Cursor localCursor = db.rawQuery(localQuery, null);
+
+            while (localCursor.moveToNext()) {
+                item.setStudentName(localCursor.getString(localCursor.getColumnIndex(DatabaseHelper.STUDENT_NAME)));
+                item.setStudentSurname(localCursor.getString(localCursor.getColumnIndex(DatabaseHelper.STUDENT_SURNAME)));
+            }
+            if (item.getStudentName() != null)
+                courseStudents.add(item);
+
+        }
+
+
+        return courseStudents;
+    }
+
+    public StudentCourse GetStudentCourse(long studentCourseId) {
+        StudentCourse studentCourse = new StudentCourse();
+        String query = "SELECT " + DatabaseHelper.STUDENT_COURSE_NOTE + ", " + DatabaseHelper.COURSE_NAME +
+                " From " + DatabaseHelper.STUDENT_COURSE_TABLE_NAME +
+                " INNER JOIN " + DatabaseHelper.COURSE_TABLE_NAME +
+                " ON " + DatabaseHelper.STUDENT_COURSE_TABLE_NAME + "." + DatabaseHelper.STUDENT_COURSE_COURSE_ID
+                + " = " + DatabaseHelper.COURSE_TABLE_NAME + "." + DatabaseHelper.COURSE_ID +
+                " WHERE " + studentCourseId + " = " + DatabaseHelper.STUDENT_COURSE_TABLE_NAME + "." + DatabaseHelper.STUDENT_COURSE_ID;
+        Cursor cursor = db.rawQuery(query, null);
+        while (cursor.moveToNext()) {
+            studentCourse.setNote(cursor.getFloat(cursor.getColumnIndex(DatabaseHelper.STUDENT_COURSE_NOTE)));
+            studentCourse.setCourseName(cursor.getString(cursor.getColumnIndex(DatabaseHelper.COURSE_NAME)));
+            studentCourse.setId((int) studentCourseId);
+        }
+        return studentCourse;
+    }
+
+    public ArrayList<Student> GetOtherStudents(long courseId) {
+        ArrayList<Student> students = new ArrayList<>();
+
+        String query = "select DISTINCT name,surname,student_id " +
+                "from Students " +
+                "inner join StudentCourses " +
+                "on Students.id = StudentCourses.student_id " +
+                "where " + courseId + " != StudentCourses.course_id " +
+                "EXCEPT " +
+                "select name,surname,student_id " +
+                "from Students " +
+                "inner join StudentCourses " +
+                "on Students.id = StudentCourses.student_id " +
+                "where " + courseId + " = StudentCourses.course_id";
+
+        Cursor cursor = db.rawQuery(query, null);
+
+        while (cursor.moveToNext()) {
+            students.add(new Student(
+                    cursor.getInt(cursor.getColumnIndex(DatabaseHelper.STUDENT_COURSE_STUDENT_ID)),
+                    cursor.getString(cursor.getColumnIndex(DatabaseHelper.STUDENT_NAME)),
+                    cursor.getString(cursor.getColumnIndex(DatabaseHelper.STUDENT_SURNAME))));
+        }
+        return students;
+    }
 }

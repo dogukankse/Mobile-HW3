@@ -1,6 +1,7 @@
 package com.dogukankse.ogrencibilgisistemi.adapters;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,6 +10,7 @@ import android.widget.TextView;
 
 import com.dogukankse.ogrencibilgisistemi.R;
 import com.dogukankse.ogrencibilgisistemi.pojo.StudentCourse;
+import com.dogukankse.ogrencibilgisistemi.ui.NoteChangeActivity;
 
 import java.util.ArrayList;
 
@@ -18,12 +20,14 @@ public class StudentCourseListAdapter extends ArrayAdapter<StudentCourse> {
     private final Context context;
     private ViewHolder holder;
     private final ArrayList<StudentCourse> studentCourses;
+    private Boolean forCourses;
 
-    public StudentCourseListAdapter(Context context, ArrayList<StudentCourse> studentCourses) {
+    public StudentCourseListAdapter(Context context, ArrayList<StudentCourse> studentCourses, Boolean forCourses) {
         super(context, 0, studentCourses);
         this.context = context;
         this.studentCourses = studentCourses;
         inflater = LayoutInflater.from(context);
+        this.forCourses = forCourses;
     }
 
     @Override
@@ -42,7 +46,7 @@ public class StudentCourseListAdapter extends ArrayAdapter<StudentCourse> {
     }
 
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
+    public View getView(final int position, View convertView, ViewGroup parent) {
         if (convertView == null) {
             convertView = inflater.inflate(R.layout.student_courses_row, null);
 
@@ -57,9 +61,25 @@ public class StudentCourseListAdapter extends ArrayAdapter<StudentCourse> {
 
         StudentCourse studentCourse = getItem(position);
         if (studentCourse != null) {
-            holder.name.setText(studentCourse.getCourseName());
+            if (forCourses)
+                holder.name.setText(studentCourse.getStudentName() + " " + studentCourse.getStudentSurname());
+            else
+                holder.name.setText(studentCourse.getCourseName());
+
             holder.note.setText(studentCourse.getNote() + "");
         }
+
+        if(forCourses){
+            convertView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(context, NoteChangeActivity.class);
+                    intent.putExtra("id",getItemId(position));
+                    context.startActivity(intent);
+                }
+            });
+        }
+
         return convertView;
     }
 

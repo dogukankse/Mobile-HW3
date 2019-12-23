@@ -12,7 +12,7 @@ import android.widget.TextView;
 import com.dogukankse.ogrencibilgisistemi.R;
 import com.dogukankse.ogrencibilgisistemi.db.DBManager;
 import com.dogukankse.ogrencibilgisistemi.pojo.Student;
-import com.dogukankse.ogrencibilgisistemi.ui.StudentCourses;
+import com.dogukankse.ogrencibilgisistemi.ui.StudentCoursesActivity;
 
 import java.util.ArrayList;
 
@@ -84,7 +84,7 @@ public class StudentListAdapter extends ArrayAdapter<Student> {
         convertView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(context, StudentCourses.class);
+                Intent intent = new Intent(context, StudentCoursesActivity.class);
                 intent.putExtra("id",getItemId(position));
                 context.startActivity(intent);
             }
